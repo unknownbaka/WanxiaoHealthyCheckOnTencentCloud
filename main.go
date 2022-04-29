@@ -15,7 +15,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
-
 	"report"
 
 	"github.com/FNDHSTD/logor"
@@ -25,6 +24,7 @@ import (
 // Config 配置文件
 type Config struct {
 	Users []User `json:"users"`
+	Others []Other `json:"other"`
 }
 
 // User 用户结构体，存储所有的初始信息
@@ -45,12 +45,22 @@ type User struct {
 	CheckData     CheckDataTmp
 }
 
+// Other 其他结构体，存储其他补充的打卡项
+type Other struct {
+	Decription   string `json:"decription"`
+	Value        string `json:"value"`
+}
+
 // LastCheck 上一次的打卡数据
 type LastCheck struct {
 	AreaStr              string `json:"areaStr"`
 	CusTemplateRelations []struct {
 		Propertyname string `json:"propertyname"`
 		Value        string `json:"value"`
+		Decription   string `json:"decription"`
+		CheckValues  []struct {
+			Text   string `json:"text"`
+		} `json:"checkValues"`
 	} `json:"cusTemplateRelations"`
 	Customerid string `json:"customerid"`
 	DeptStr    struct {
@@ -322,7 +332,7 @@ func (u *User) login() error {
 }
 
 // 获取上一次的打卡信息
-func (u *User) getLastCheckInData() error {
+func (u *User) getLastCheckInData(o Config) error {
 	// 准备上传的数据
 	jsonDataOfUploadJSONMap := make(map[string]string)
 	jsonDataOfUploadJSONMap["templateid"] = "pneumonia"
@@ -388,6 +398,7 @@ func (u *User) getLastCheckInData() error {
 	u.CheckData.JSONData.Token = u.Session
 	u.CheckData.JSONData.Userid = lastData.Userid
 	u.CheckData.JSONData.Username = lastData.Username
+	info := ""
 	for i := 0; i < len(lastData.CusTemplateRelations); i++ {
 		u.CheckData.JSONData.Updatainfo = append(u.CheckData.JSONData.Updatainfo, struct {
 			Propertyname string "json:\"propertyname\""
@@ -395,7 +406,24 @@ func (u *User) getLastCheckInData() error {
 		}{})
 		u.CheckData.JSONData.Updatainfo[i].Propertyname = lastData.CusTemplateRelations[i].Propertyname
 		u.CheckData.JSONData.Updatainfo[i].Value = lastData.CusTemplateRelations[i].Value
+		if u.CheckData.JSONData.Updatainfo[i].Value == "" {
+			for j := 0; j < len(o.Others); j++ {
+				if lastData.CusTemplateRelations[i].Decription == o.Others[j].Decription {
+					u.CheckData.JSONData.Updatainfo[i].Value = o.Others[j].Value
+					break
+				}
+			}
+			if u.CheckData.JSONData.Updatainfo[i].Value != "" {
+				continue
+			}
+			if info != "" { info = info + "\n\n" } else { info = "\n" }
+			info = info + "描述：" + lastData.CusTemplateRelations[i].Decription + "\n选项："
+			for j := 0; j < len(lastData.CusTemplateRelations[i].CheckValues); j++ {
+				info = info + lastData.CusTemplateRelations[i].CheckValues[j].Text + " "
+			}
+		}
 	}
+	if info != "" { report.WechatPush(u.WexID, u.WexSecret, "完美校园打卡存在以下未填信息", info, "text") }
 
 	return nil
 }
@@ -545,7 +573,7 @@ func wanxiaoHealthyCheck() {
 		}
 		logger.Info("3. Session激活为Token成功！")
 		// 获取上一次的打卡信息
-		err = user.getLastCheckInData()
+		err = user.getLastCheckInData(config)
 		if err != nil {
 			logger.Error("获取上次打卡信息失败, %v", err)
 			return
