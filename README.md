@@ -44,6 +44,8 @@
 
      - [完美校园APP][5]，若链接失效可去[完美校园官网][6]下载
 
+     - [完美校园 ID 注册][13], 下载解压使用, 使用此软件可直接跳至第 4 步, 软件作者[ReaJason][14]
+
 2. 打开VMOS，并安装完美校园APP进行打卡
 
     - 打开VMOS，点击“+”
@@ -120,3 +122,5 @@
 [10]:http://sc.ftqq.com/
 [11]:https://pushplus.hxtrip.com/
 [12]:https://note.youdao.com/ynoteshare1/index.html?id=351e08a72378206f9dd64d2281e9b83b&type=note#/
+[13]:https://lingsiki.lanzoui.com/iQamDmt165i
+[14]:https://github.com/ReaJason
