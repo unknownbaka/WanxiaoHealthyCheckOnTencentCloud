@@ -24,6 +24,31 @@
 
 <!--more-->
 
+## 编译方法
+
+> 构建 本地安装golang环境后执行一下命令进行构建
+
+### bash
+```bash
+GOPROXY=https://goproxy.cn GOOS=linux GOARCH=amd64 go build -o main .
+```
+
+### cmd
+```bash
+set GOPROXY=https://goproxy.cn
+set GOOS=linux
+set GOARCH=amd64
+go build -o main .
+```
+
+### powershell
+```bash
+$env:GOPROXY='https://goproxy.cn'
+$env:GOOS='linux'
+$env:GOARCH='amd64'
+go build -o main .
+```
+
 ## 寻人启事
 
 寻找一位熟悉Android开发或者逆向的童鞋完善此项目, https://t.me/joinchat/U1CYMWvgXjXTE9lx
