@@ -11,5 +11,15 @@
             "wexId": "企业id",
             "wexSecret": "企业微信推送的secret"
         }
+    ],
+    "other": [
+        {
+            "decription": "描述",
+            "value": "选项"
+        },
+        {
+            "decription": "描述",
+            "value": "选项"
+        }
     ]
 }
