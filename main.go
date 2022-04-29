@@ -37,6 +37,8 @@ type User struct {
 	EmailPassword string `json:"emailPassword"`
 	ServerJ       string `json:"serverJ"`
 	Pushplus      string `json:"pushPlus"`
+	WexID         string `json:"wexId"`
+	WexSecret     string `json:"wexSecret"`
 	PrivateKey    *rsa.PrivateKey
 	Key           string
 	DeviceID      string `json:"deviceId"`
@@ -491,6 +493,11 @@ func (u *User) report(text string) (err error) {
 		if errTmp != nil {
 			err = fmt.Errorf("邮件提醒失败" + errTmp.Error())
 		}
+	} else if u.WexID != "" && u.WexSecret != "" {
+		errTmp := report.WechatPush(u.WexID, u.WexSecret, "完美校园打卡通知", text, "textcard")
+		if err != nil {
+			err = fmt.Errorf("企业微信提醒失败" + errTmp.Error())
+		}
 	} else if u.Pushplus != "" {
 		errTmp := report.Pushpluse(u.Pushplus, "完美校园打卡通知", text)
 		if err != nil {
@@ -550,7 +557,7 @@ func wanxiaoHealthyCheck() {
 		}
 		logger.Info("4. 用户%v打卡成功", user.Username)
 		// 开始发通知
-		err = user.report("用户" + user.Username + "今日打卡成功")
+		err = user.report("用户" + user.Username + "打卡成功！")
 		if err != nil {
 			logger.Error("用户%v提醒失败：%v", user.Username, err.Error())
 		}

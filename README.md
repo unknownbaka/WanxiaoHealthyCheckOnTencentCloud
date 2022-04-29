@@ -18,7 +18,9 @@
 
 - server酱推送（有问题），[官网][10]
 
-> 三种推送方式请任选其一（直接把对应的key填入配置文件即可），推荐使用邮箱或者pushplus，若填写了多种推送方式则按照优先级选择最大的，其优先级为：邮箱>pushplus>server酱
+- 企业微信推送，[教程][12]
+
+> 四种推送方式请任选其一（直接把对应的key填入配置文件即可），推荐使用邮箱或者pushplus，若填写了多种推送方式则按照优先级选择最大的，其优先级为：邮箱>企业微信>pushplus>server酱
 
 ## 寻人启事
 
@@ -102,3 +104,4 @@
 [9]:https://cloud.tencent.com/document/product/583/9708
 [10]:http://sc.ftqq.com/
 [11]:https://pushplus.hxtrip.com/
+[12]:https://note.youdao.com/ynoteshare1/index.html?id=351e08a72378206f9dd64d2281e9b83b&type=note#/
