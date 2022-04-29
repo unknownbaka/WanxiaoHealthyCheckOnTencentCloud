@@ -76,6 +76,53 @@ func Pushpluse(token string, title string, content string) error {
 	return nil
 }
 
+// 企业微信通知
+func WechatPush(wexid string, wexsecret string, title string, content string, msgtype string) error {
+    url := fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s", wexid, wexsecret)
+    resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+    defer resp.Body.Close()
+    body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+    var data map[string]string
+    err = json.Unmarshal(body, &data)
+	access_token := data["access_token"]
+
+    req := map[string]interface{}{
+        "touser":  "@all",
+        "msgtype": msgtype,
+        "agentid": 1000002,
+        "textcard": map[string]interface{}{
+                "title": title,
+                "description": content,
+                "url": "URL",
+        },
+	"text": map[string]interface{}{
+            "content": title + "\n" + content,
+        },
+    }
+
+    url = fmt.Sprintf("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + access_token)
+    xxx, err := json.Marshal(req)
+	if err != nil {
+		return err
+	}
+    res, err := http.Post(url, "application/json", bytes.NewReader(xxx))
+	if err != nil {
+		return err
+	}
+    defer res.Body.Close()
+    err = json.NewDecoder(res.Body).Decode(&req)
+	if err != nil {
+		return err
+	}
+    return err
+}
+
 // 发起TLS
 func dial(addr string) (*smtp.Client, error) {
 	connect, err := tls.Dial("tcp", addr, &tls.Config{InsecureSkipVerify: true})

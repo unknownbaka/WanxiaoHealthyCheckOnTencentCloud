@@ -7,7 +7,9 @@
             "email": "QQ邮箱",
             "emailPassword": "qq邮箱授权码",
             "serverJ": "server酱推送的sckey",
-            "pushPlus": "pushplus推送的token"
+            "pushPlus": "pushplus推送的token",
+            "wexId": "企业id",
+            "wexSecret": "企业微信推送的secret"
         }
     ]
 }
